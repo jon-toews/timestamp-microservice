@@ -1,0 +1,14 @@
+body {
+    color: rgba(0,0,0,.8);
+    max-width: 900px;
+    width: 90%;
+    margin: 0 auto;
+
+    font-family: sans-serif;
+}
+
+code {
+    display: block;
+    color: #000;
+    background: #fff;
+}
