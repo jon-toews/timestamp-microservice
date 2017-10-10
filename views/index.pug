@@ -1,0 +1,15 @@
+doctype html
+html
+  head
+    title= `${title}`
+    link(rel='stylesheet', href='/dist/style.css')
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+  body
+    h1 timestamp microservice
+    p Pass a unix timestamp or a date string as a url paramater.
+
+    h2 Usage:
+        code= `${name}December%2015,%202015`
+        code= `${name}1450137600`
+    h2 Output
+        code { "unix": 1450137600, "natural": "Sun, 05 Jan 2014 06:00:00 GMT" }
