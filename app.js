@@ -1,15 +1,18 @@
 const path = require('path');
 const express = require('express');
+const moment = require('moment');
 
 const app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views')); // this is the folder where we keep our pug files
 app.set('view engine', 'pug');
 
+app.use(express.static('public'))
+
 app.get('/', (req, res) => {
     res.render('index', {
         title: 'timestamp microservice',
-        name: 'http://exmaple-site.com/'
+        name: 'http://example-site.com/'
     });
 })
 
@@ -23,18 +26,18 @@ function parseDate (req, res) {
     const dateString = req.params.date;
 
     let date = null;
-    if (isNaN(dateString)) {
-        date = new Date(dateString);
-    } else {
-        date = new Date(parseInt(dateString * 1000));
-    }
-    
-    const unix = date.valueOf() / 1000;
-    const natural = (date.toUTCString() === "Invalid Date") ? null: date.toUTCString();
 
-    const dates = {
-        unix,
-        natural
+    if (isNaN(dateString)) {
+        date = moment(dateString);
+    } else {
+        date = moment.unix(dateString);
     }
-    res.json(dates);
+
+    date.utc()
+
+    const unix = date.unix();
+    const natural = date.isValid() ? date.format('MMMM Do YYYY'): null;
+
+    res.json({ unix, natural })
+
 }
