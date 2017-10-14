@@ -1,14 +1,18 @@
 const path = require('path');
 const express = require('express');
 const moment = require('moment');
+const routes = require('./routes/index');
 
 const app = express();
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views')); // this is the folder where we keep our pug files
 app.set('view engine', 'pug');
 
+// static files
 app.use(express.static('public'))
 
+// homepage
 app.get('/', (req, res) => {
     res.render('index', {
         title: 'timestamp microservice',
@@ -16,28 +20,20 @@ app.get('/', (req, res) => {
     });
 })
 
-app.get('/:date', parseDate)
+//api routes
+app.use('/api', routes);
 
-app.listen(3000, function() {
-    console.log('App listening on port 3000!')
+// error handling
+app.use((req, res, next) => {
+    const err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+  });
+
+app.use((err, req, res, next) => {
+    console.error(err)
+    res.status(err.status || 500);
+    res.send(`${err.status} ${err.message}`);
 })
 
-function parseDate (req, res) {
-    const dateString = req.params.date;
-
-    let date = null;
-
-    if (isNaN(dateString)) {
-        date = moment(dateString);
-    } else {
-        date = moment.unix(dateString);
-    }
-
-    date.utc()
-
-    const unix = date.unix();
-    const natural = date.isValid() ? date.format('MMMM Do YYYY'): null;
-
-    res.json({ unix, natural })
-
-}
+module.exports = app;
